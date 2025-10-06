@@ -16,7 +16,12 @@ dependencies = [
 ]
 
 [project.scripts]
-tuxkatana = "TuxKatana:main"
+tuxkatana = "tuxkatana.TuxKatana:main"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "logs"
+]
 
 [build-system]
 requires = ["hatchling"]
