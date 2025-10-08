@@ -43,7 +43,7 @@
 
 Requirements:
 * python >= 3.12
-* [uv](https://github.com/astral-sh/uv)
+* [poetry](https://python-poetry.org/)
 
 ## Tuner
 
