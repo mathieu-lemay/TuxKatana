@@ -41,10 +41,9 @@
 
 ## Install
 
-Python Requirements:
-
-	gtk4 mido bidict collections sounddevice (for Tuner)
-
+Requirements:
+* python >= 3.12
+* [poetry](https://python-poetry.org/)
 
 ## Tuner
 
