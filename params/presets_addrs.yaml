@@ -1,0 +1,66 @@
+UserPatch%PatchName:
+  addr: '60 00 00 00'
+  size: 16
+UserPatch%Patch_0:
+  addr: '60 00 00 10'
+  size: 72
+UserPatch%Eq(2):
+  addr: '60 00 00 60'
+  size: 24
+UserPatch%Fx(1):
+  addr: '60 00 01 00'
+  size: 221
+UserPatch%Fx(2):
+  addr: '60 00 03 00'
+  size: 221
+UserPatch%Delay(1):
+  addr: '60 00 05 00'
+  size: 26
+UserPatch%Delay(2):
+  addr: '60 00 05 20'
+  size: 26
+UserPatch%Patch_1:
+  addr: '60 00 05 40'
+  size: 50
+UserPatch%Patch_2:
+  addr: '60 00 06 20'
+  size: 36
+UserPatch%Status:
+  addr: '60 00 06 50'
+  addr: 18
+UserPatch%GafcExp1AsgnMinMax:
+  addr: '60 00 09 39'
+  size: 76
+UserPatch%KnobAsgn:
+  addr: ''
+  size: 33
+UserPatch%ExpPedalAsgn:
+  addr: ''
+  size: 33
+UserPatch%ExpPedalAsgnMinMax:     # ⚠️  Sequence not valuable
+  addr: '60 00 08 30'
+  size: 76
+UserPatch%GafcExp1Asgn:
+  addr: ''
+  size: 33
+UserPatch%GafcExp1AsgnMinMax:     # ⚠️  Sequence not valuable +1
+  addr: '60 00 09 30'
+  size: 76
+UserPatch%GafcExp2Asgn:
+  addr: ''
+  size: 33
+UserPatch%GafcExp2AsgnMinMax:     # ⚠️  Sequence not valuable
+  addr: '60 00 0A 30'
+  size: 76
+UserPatch%FsAsgn:
+  addr: ''
+  size: 2
+UserPatch%Contour(1):
+  addr: ''
+  size: 2
+UserPatch%Contour(2):
+  addr: ''
+  size: 2
+UserPatch%Contour(3):
+  addr: ''
+  size: 2

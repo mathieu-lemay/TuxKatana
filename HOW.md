@@ -85,3 +85,36 @@ Address('60 00 03 62')
  Send 3 MIDIBytes at Address('00 01 00 00'): see 'SWITCHER' in [config.yaml](./params/config.yaml)
 
 
+## Presets
+
+  1. First write a preset with the json and paramSet format to your amp with some other app :  
+for example : file: TuxKatana/preset.tsl
+
+```json  
+{
+    "name": "fxTest1",
+    "formatRev": "0002",
+    "device": "KATANA MkII",
+    "data": [
+        [
+            {
+                "memo": {
+                    "memo": "",
+                    "isToneCentralPatch": true
+                },
+                "paramSet": {
+                    "UserPatch%PatchName": [
+                        "66",
+                        "78",
+                        "54",
+
+```  
+
+  2. Start TuxKatana app, then click on "Save Mry to File" button in the DEBUG tab  
+  3. Compare the preset.tsl file, with memory_dump.bin  
+ 
+```bash  
+TuxKatana/:$ python compare_tsl_mry.py preset.tsl memory_dump.bin
+```  
+ 
+![output example](./snapshots/compare_tsl_mry.png)
