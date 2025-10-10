@@ -32,7 +32,7 @@
 
 ![Tuner](./snapshots/Tuner.png)
 
-![Limiter Mod/Fx](./snapshots/Limiter.png)
+![Limiter Mod/Fx](./snapshots/FX-snapshot.png)
 
 ## Missing
 
