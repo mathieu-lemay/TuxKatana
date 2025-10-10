@@ -12,15 +12,12 @@ from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
 class PresetUI(Gtk.Box):
-    def __init__(self, own_ctrl):
+    def __init__(self, ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        self.own_ctrl = own_ctrl
+        self.ctrl = ctrl
         self.filename = None
         self.file_path = None
         self.selected_channel = None
-
-        # 📂 ⬆️  ⬇️  ✅
-        
 
         box_tsl = BoxInner(label="TSL File", h_box=True)
         box_tsl.set_spacing(6)
@@ -54,14 +51,21 @@ class PresetUI(Gtk.Box):
 
         self.select = Gtk.ComboBoxText()
         self.select.set_hexpand(False)
-        self.open.set_tooltip_text("Select Contained Preset")
+        self.select.set_tooltip_text("Select Contained Preset")
         box.h_box.append(self.select)
+
+        self.chan_sel = Gtk.ComboBoxText()
+        self.chan_sel.set_hexpand(False)
+        self.chan_sel.set_tooltip_text("Select Dest Channel")
+        box.h_box.append(self.chan_sel)
+        for i in range(8):
+            self.chan_sel.append(str(i), f"CH_{i+1}")
 
         self.load = Gtk.Button(label="⬆️ ")
         box.h_box.append(self.load)
         self.load.set_halign(Gtk.Align.END)
         self.load.set_tooltip_text("Load Preset")
-        self.load.connect("toggled", self.load_preset)
+        self.load.connect("clicked", self.load_preset)
 
     def reload_preset(self, widget):
         log.debug("reload")
@@ -69,35 +73,34 @@ class PresetUI(Gtk.Box):
     def save_tsl(self, widget):
         log.debug("save")
 
-    def load_tsl(self, widget):
+    def load_preset(self, widget):
         log.debug("load")
 
     def open_tsl(self, widget):
-        log.debug("open")
-
-    def on_select_clicked(self, widget):
-        win = self.own_ctrl.device.ctrl.parent.win
+        win = self.ctrl.parent.win
         chooser = FileChooser(win, parent=self, title="Open .tsl file")
         chooser.add_filter("TSL Files", ["*.tsl"])
         chooser.add_buttons(
             "_Cancel", Gtk.ResponseType.CANCEL,
             "_Open", Gtk.ResponseType.ACCEPT
         )
-        file_path = chooser.choose()
-        log.debug(file_path)
+        self.file_path = chooser.choose()
+        log.debug(f"{self.file_path=}")
         if self.file_path:
             self.filename = os.path.basename(self.file_path).split('.')[0]
             self.file.set_text(self.filename)
 
+       
+
     def on_load_clicked(self, button):
-        win = self.own_ctrl.device.ctrl.parent.win
+        win = self.ctrl.parent.win
         win.set_sensitive(False)
         ch_chooser = ChannelChooser(win, self)
         ch_chooser.connect("response", self.on_channel_choosed)
         ch_chooser.show()
 
     def on_channel_choosed(self, dialog, response):
-        win = self.own_ctrl.device.ctrl.parent.win
+        win = self.ctrl.parent.win
         win.set_sensitive(True)
         if response == Gtk.ResponseType.OK:
             self.selected_channel = dialog.get_selected_channel()
@@ -110,4 +113,4 @@ class PresetUI(Gtk.Box):
         #log.debug(f"{self.dest_dir+self.file_path}")
         filename = self.file.get_text()
         log.debug(filename)
-        self.own_ctrl.save(filename + '.tsl')
+        # self.own_ctrl.save(filename + '.tsl')

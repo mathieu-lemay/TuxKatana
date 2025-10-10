@@ -11,7 +11,7 @@ from threading import Thread, Event
 from queue import Queue, Empty
 
 from .midi_port import KatanaPort
-from .preset import Preset, Presets
+from widgets.presets import Presets
 # from .device import Device
 from .midi_bytes import Address, MIDIBytes
 from .sysex import SysEx
@@ -66,7 +66,7 @@ class Controller(GObject.GObject):
         self.presets = Gio.ListStore(item_type=Presets)
         # self.amplifier=Amplifier( self )
 
-        self.preset = Preset( self )
+        # self.preset = Preset( self )
         self.charging = False
         self._charging_id = None
 

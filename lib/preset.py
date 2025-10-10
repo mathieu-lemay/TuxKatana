@@ -12,10 +12,15 @@ class Presets(GObject.GObject):
     # label = GObject.Property(type=str)
     # channel = GObject.Property(type=int)
 
-class Preset(TSLFile, GObject.GObject):
-    def __init__(self, device):
-        super().__init__(device)
-        #self.tsl = TSLFile(device)
+#class Preset(TSLFile, GObject.GObject):
+#    def __init__(self, ctrl):
+#        super().__init__(ctrl)
+#        self.ctrl = ctrl
 
-    def gen(self):
-        self.save()
+#    def set_list_presets(self):
+#        log.debug("--")
+ 
+#        #self.tsl = TSLFile(device)
+
+#    def gen(self):
+#        self.save()

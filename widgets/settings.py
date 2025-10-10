@@ -16,7 +16,7 @@ from widgets.tuner_dialog import * #s tun_dial
 
 from .slider import Slider
 
-from .presets import PresetsView
+from .presets import PresetsPage
 from .amplifier import Amplifier
 from .booster import Booster
 from .mod_fx import Mod, Fx
@@ -133,7 +133,7 @@ class Settings(Gtk.Box):
             page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
             tabs.add_tab(page, name.lower(), name)
             if name == "PRESETS":
-                self.presets = PresetsView(ctrl)
+                self.presets = PresetsPage(ctrl)
                 page.append(self.presets)
             else:
                 ks_settings = KS_Settings( name, ctrl)

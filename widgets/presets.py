@@ -8,6 +8,10 @@ log = logging.getLogger(LOGGER_NAME)
 
 from .preset import PresetUI
 
+class Presets(GObject.GObject):
+    num = GObject.Property(type=int, default=-1)
+    name = GObject.Property(type=str)
+
 class PresetEntry(Gtk.Entry):
     def __init__(self, text):
         super().__init__()
@@ -24,56 +28,60 @@ class PresetRow(Gtk.Box):
         self.append(self.num)
         self.append(self.name)
 
-class PresetsView(Gtk.Box):
+class PresetsPage(Gtk.Box):
     selected = GObject.Property(type=int, default=-1)
     def __init__(self, ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.ctrl = ctrl
-        self.own_ctrl = self.ctrl.presets
+        # self.own_ctrl = self.ctrl.presets
 
         factory = Gtk.SignalListItemFactory()
         factory.connect("setup", self.on_setup)
         factory.connect("bind", self.on_bind)
 
-        self.selection = Gtk.SingleSelection.new(ctrl.presets)
+        # self.selection = Gtk.SingleSelection.new(ctrl.presets)
+        self.selection = Gtk.MultiSelection.new(ctrl.presets)
         listview = Gtk.ListView.new(self.selection, factory)
         listview.get_style_context().add_class('inner')
         self.append(listview)
 
-        self.preset = PresetUI(ctrl.preset)
+        self.preset = PresetUI(ctrl)
         self.append(self.preset)
+
+        self.selected_items = []
 
         self.selection.connect("selection-changed", self.on_selection_changed)
         self.ctrl.mry.connect('mry-loaded', self.on_mry_loaded)
         self.ctrl.connect("channel-changed", self.on_channel_changed)
 
     def on_channel_changed(self, obj, ch_num):
-        self.selection.set_selected(ch_num - 1)
+        self.selection.select_item(ch_num - 1, False)
+        self.preset.chan_sel.set_active_id(str(ch_num-1))
 
     def on_mry_loaded(self, mry):
         preset_name = self.ctrl.mry.get_actual_preset()
-        index = self.find_index_by_text(self.selection, preset_name)
+        index = self.find_index(self.selection, preset_name)
         self.ctrl.emit("channel-changed", int(index+1))
 
     def on_selection_changed(self, selection, position, n_items):
-        index = selection.get_selected()
-        self.selected = index
-        if index != Gtk.INVALID_LIST_POSITION:
-            item = selection.get_model().get_item(index)
-            # log.debug(f"Sélectionné index={index}, valeur={item}")
-            # self.ctrl.emit("channel-changed", index+1)
+        # selected_items = selection.get_selection()
+        bitset = selection.get_selection()
+        model = selection.get_model()
+        self.selected_items = [model.get_item(i) \
+            for i in range(model.get_n_items()) \
+            if bitset.contains(i)]
+        sel_itms = self.selected_items
+        if len(sel_itms) == 1:
+            self.preset.chan_sel.set_active_id(str(sel_itms[0].num-1))
+        log.debug([(si.num,si.name) for si in self.selected_items])
 
-    def find_index_by_text(self, selection, text_to_find):
+    def find_index(self, selection, name):
         model = selection.get_model()
         for i in range(model.get_n_items()):
             preset=model.get_item(i)
-            # log.debug(f"{preset.name=} {text_to_find.strip()=}")
-            if text_to_find.strip() in preset.name.strip():
-                if i>8:
-                    log.warning(f"bad index : {i}")
-                    return 0
+            if name.strip() == preset.name.strip():
                 return i
-        return 0 #Gtk.INVALID_LIST_POSITION
+        return 0
 
     def on_setup(self, factory, list_item):
         row = PresetRow()
