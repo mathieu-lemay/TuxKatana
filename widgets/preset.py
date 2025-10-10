@@ -14,19 +14,10 @@ log = logging.getLogger(LOGGER_NAME)
 class PresetUI(Gtk.Box):
     def __init__(self, own_ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        # self.set_hexpand(False)
         self.own_ctrl = own_ctrl
         self.filename = None
         self.file_path = None
         self.selected_channel = None
-
-        # h_box1 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-        # # label = Gtk.Label(label="Filename: ")
-        # # h_box1.append(label)
-        # writechan = Gtk.Button(label="Write to Amp")
-        # writechan.connect("clicked", self.on_load_clicked)
-        # h_box1.append(writechan)
-        # self.append(h_box1)
 
         # 📂 ⬆️  ⬇️  ✅
         
@@ -34,16 +25,12 @@ class PresetUI(Gtk.Box):
         box_tsl = BoxInner(label="TSL File", h_box=True)
         box_tsl.set_spacing(6)
 
-        # box_tsl.h_box.set_hexpand(True)
         self.append(box_tsl)
 
         self.reload = Gtk.Button(label="🔄")
         box_tsl.h_box.append(self.reload)
-        # self.reload.set_halign(Gtk.Align.END)
-        # self.reload.get_style_context().add_class('edit-mode')
         self.reload.set_tooltip_text("Reload Preset")
-        # self.reload.connect("toggled", self.toggle_edit_mode)
-
+        self.reload.connect("clicked", self.reload_preset)
 
         self.file = Gtk.Entry()
         self.file.set_hexpand(True)
@@ -53,17 +40,13 @@ class PresetUI(Gtk.Box):
 
         self.save = Gtk.Button(label="💾")
         box_tsl.h_box.append(self.save)
-        # self.save.set_halign(Gtk.Align.END)
-        # self.save.get_style_context().add_class('edit-mode')
         self.save.set_tooltip_text("Save To TSL")
-        # self.save.connect("toggled", self.toggle_edit_mode)
+        self.save.connect("clicked", self.save_tsl)
 
         self.open = Gtk.Button(label="📂")
         box_tsl.h_box.append(self.open)
-        # self.save.set_halign(Gtk.Align.END)
-        # self.save.get_style_context().add_class('edit-mode')
         self.open.set_tooltip_text("Open TSL")
-        # self.save.connect("toggled", self.toggle_edit_mode)
+        self.open.connect("clicked", self.open_tsl)
 
         box = BoxInner(label="TSL Contained Presets", h_box=True)
         box.set_spacing(6)
@@ -77,20 +60,20 @@ class PresetUI(Gtk.Box):
         self.load = Gtk.Button(label="⬆️ ")
         box.h_box.append(self.load)
         self.load.set_halign(Gtk.Align.END)
-        # self.save.get_style_context().add_class('edit-mode')
-        self.save.set_tooltip_text("Save To TSL")
-        # self.save.connect("toggled", self.toggle_edit_mode)
+        self.load.set_tooltip_text("Load Preset")
+        self.load.connect("toggled", self.load_preset)
 
+    def reload_preset(self, widget):
+        log.debug("reload")
 
-#         savefile = Gtk.Button(label="Save")
-#         savefile.set_halign(Gtk.Align.END)
-#         savefile.connect("clicked", self.on_save_clicked)
-#         box_tsl.h_box.append(savefile)
+    def save_tsl(self, widget):
+        log.debug("save")
 
-#         selectfile = Gtk.Button(label="Select")
-#         selectfile.set_halign(Gtk.Align.END)
-#         selectfile.connect("clicked", self.on_select_clicked)
-#         box_tsl.h_box.append(selectfile)
+    def load_tsl(self, widget):
+        log.debug("load")
+
+    def open_tsl(self, widget):
+        log.debug("open")
 
     def on_select_clicked(self, widget):
         win = self.own_ctrl.device.ctrl.parent.win
