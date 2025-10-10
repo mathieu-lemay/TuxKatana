@@ -20,6 +20,7 @@ class PresetRow(Gtk.Box):
         # self.channel_idx = -1
         self.num = Gtk.Label(xalign=1)
         self.name = Gtk.Label()
+
         self.append(self.num)
         self.append(self.name)
 

@@ -3,6 +3,7 @@ gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, Gio #GLib, Gdk, GObject
 import os
 
+from .box_inner import BoxInner
 from .file_chooser import FileChooser
 from .channel_chooser import ChannelChooser
 
@@ -13,31 +14,83 @@ log = logging.getLogger(LOGGER_NAME)
 class PresetUI(Gtk.Box):
     def __init__(self, own_ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        # self.set_hexpand(False)
         self.own_ctrl = own_ctrl
         self.filename = None
         self.file_path = None
         self.selected_channel = None
 
-        h_box1 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-        label = Gtk.Label(label="Filename: ")
-        h_box1.append(label)
+        # h_box1 = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        # # label = Gtk.Label(label="Filename: ")
+        # # h_box1.append(label)
+        # writechan = Gtk.Button(label="Write to Amp")
+        # writechan.connect("clicked", self.on_load_clicked)
+        # h_box1.append(writechan)
+        # self.append(h_box1)
+
+        # 📂 ⬆️  ⬇️  ✅
+        
+
+        box_tsl = BoxInner(label="TSL File", h_box=True)
+        box_tsl.set_spacing(6)
+
+        # box_tsl.h_box.set_hexpand(True)
+        self.append(box_tsl)
+
+        self.reload = Gtk.Button(label="🔄")
+        box_tsl.h_box.append(self.reload)
+        # self.reload.set_halign(Gtk.Align.END)
+        # self.reload.get_style_context().add_class('edit-mode')
+        self.reload.set_tooltip_text("Reload Preset")
+        # self.reload.connect("toggled", self.toggle_edit_mode)
+
+
         self.file = Gtk.Entry()
-        h_box1.append(self.file)
-        ext = Gtk.Label(label=".tsl")
-        h_box1.append(ext)
-        writechan = Gtk.Button(label="Write to Amp")
-        writechan.connect("clicked", self.on_load_clicked)
-        h_box1.append(writechan)
-        self.append(h_box1)
+        self.file.set_hexpand(True)
+        box_tsl.h_box.append(self.file)
+        ext = Gtk.Label(label=".tsl   ")
+        box_tsl.h_box.append(ext)
 
-        selectfile = Gtk.Button(label="Select TSL file")
-        selectfile.connect("clicked", self.on_select_clicked)
-        self.append(selectfile)
+        self.save = Gtk.Button(label="💾")
+        box_tsl.h_box.append(self.save)
+        # self.save.set_halign(Gtk.Align.END)
+        # self.save.get_style_context().add_class('edit-mode')
+        self.save.set_tooltip_text("Save To TSL")
+        # self.save.connect("toggled", self.toggle_edit_mode)
 
-        savefile = Gtk.Button(label="Save TSL file")
-        savefile.connect("clicked", self.on_save_clicked)
-        self.append(savefile)
+        self.open = Gtk.Button(label="📂")
+        box_tsl.h_box.append(self.open)
+        # self.save.set_halign(Gtk.Align.END)
+        # self.save.get_style_context().add_class('edit-mode')
+        self.open.set_tooltip_text("Open TSL")
+        # self.save.connect("toggled", self.toggle_edit_mode)
 
+        box = BoxInner(label="TSL Contained Presets", h_box=True)
+        box.set_spacing(6)
+        self.append(box)
+
+        self.select = Gtk.ComboBoxText()
+        self.select.set_hexpand(False)
+        self.open.set_tooltip_text("Select Contained Preset")
+        box.h_box.append(self.select)
+
+        self.load = Gtk.Button(label="⬆️ ")
+        box.h_box.append(self.load)
+        self.load.set_halign(Gtk.Align.END)
+        # self.save.get_style_context().add_class('edit-mode')
+        self.save.set_tooltip_text("Save To TSL")
+        # self.save.connect("toggled", self.toggle_edit_mode)
+
+
+#         savefile = Gtk.Button(label="Save")
+#         savefile.set_halign(Gtk.Align.END)
+#         savefile.connect("clicked", self.on_save_clicked)
+#         box_tsl.h_box.append(savefile)
+
+#         selectfile = Gtk.Button(label="Select")
+#         selectfile.set_halign(Gtk.Align.END)
+#         selectfile.connect("clicked", self.on_select_clicked)
+#         box_tsl.h_box.append(selectfile)
 
     def on_select_clicked(self, widget):
         win = self.own_ctrl.device.ctrl.parent.win

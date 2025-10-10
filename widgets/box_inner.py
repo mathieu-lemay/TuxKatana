@@ -12,7 +12,8 @@ log = logging.getLogger(LOGGER_NAME)
 
 class BoxInner(Gtk.Box):
     def __init__(self, label="", h_box=False):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL)
+        orientation = Gtk.Orientation.VERTICAL
+        super().__init__(orientation=orientation)
 
         self.get_style_context().add_class('inner')
         label=Gtk.Label(label=label)
@@ -20,6 +21,7 @@ class BoxInner(Gtk.Box):
         label.set_xalign(1.0)
         # label.set_margin_end(20)
         self.append(label)
+        self.h_box = None
 
         if h_box:
             self.h_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
