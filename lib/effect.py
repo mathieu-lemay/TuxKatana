@@ -40,7 +40,7 @@ class Effect:
         current = None
         if addr:
             current = self.mry.read(addr)
-        log.debug(f"{self.name} | {addr}: {name}={value} / {current=}")
+        # log.debug(f"{self.name} | {addr}: {name}={value} / {current=}")
         if name == self.name.lower() + '_sw'\
                 or name.endswith('_bank_sel'):
             self.direct_mry(addr, value)
@@ -51,30 +51,44 @@ class Effect:
             value = list(self.types.inverse)[value]
             current = self.get_property(name)
             addr = self.mapping.get(name, None)
-            # log.debug(f"{name}={value} {self.prefix=}")
+            log.debug(f"{name}={value} {self.prefix=}")
             log.debug(f"{self.name}: {self.types.inverse[value]}")
             self.ctrl.emit("effect-changed", self.name, self.types.inverse[value])
             if current != value:
                 self.direct_mry(addr, value)
         elif name.endswith('_lvl'):
-            # log.debug(f"{name}={value}/{current}")
             if current != value:
                 self.direct_mry(addr, value)
 
     def direct_set(self, prop, value):
-        prefixes = ['bo_','mo_','fx_','de_','re_']
-        if 'type' in prop and self.prefix in prefixes:
-            idx = prefixes.index(self.prefix)
-            self.ctrl.emit("set-effect-name", idx, self.types.inverse[value.str])
-       # log.debug(f"{prop}={value}:{type(value)}")
+        self._change_effect_name(prop, value)
         value = self.type_val(prop, value)
+
         self.handler_block(self.notify_id)
         self.set_property(prop, value)
         self.handler_unblock(self.notify_id)
         if '_status' in prop and not self.status_bind:
-            # log.debug(f"{prop}={value}/{self.get_property(prop)}")
             self.ctrl.emit('status-changed', self, prop)
             self.status_bind=True
+
+    def _init_effect_name(self, prop, value):
+        # if isinstance(value, MIDIBytes):
+            # value = value.str
+        prefixes = ['bo_','mo_','fx_','de_','re_']
+        prfx = self.prefix
+        if prop == prfx + 'bank_sel' and self.name != 'DelayReverb':
+            idx = prefixes.index(prfx)
+            b = ['G','R','Y'][value.int]
+            bank = prfx + 'type_' + b
+            tp = MIDIBytes(self.get_property( prfx + 'type_' + b)).str
+            name = self.types.inverse[tp]
+            self.ctrl.emit("set-effect-name", idx, name)
+
+    def _change_effect_name(self, prop, value):
+        prefixes = ['bo_','mo_','fx_','de_','re_']
+        if 'type' in prop and self.prefix in prefixes and self.name != 'DelayReverb':
+            idx = prefixes.index(self.prefix)
+            self.ctrl.emit("set-effect-name", idx, self.types.inverse[value.str])
 
     def direct_mry(self, addr, val):
         if self.parent_prefix == 'fx_':
@@ -89,6 +103,8 @@ class Effect:
         for prop, addr in self.mapping.items():
             val = mry.read(addr)
             if val != None:
+                self._init_effect_name(prop, val)
+
                 self.direct_set(prop, val)
             else:
                 log.warning("{prop}: {val=}")
