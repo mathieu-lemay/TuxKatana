@@ -27,16 +27,9 @@ class Switcher(Gtk.Box):
         self.bank_b.f_bank = self.bank_a
 
         self.effects = Bank("EFFECTS", config['EFFECTS'], single=True)
-        # for but in self.effects.buttons:
-            # log.debug(but.name)
-            # but.toggled_id = but.connect("toggled", self.on_effect_switched)
 
         self.ctrl.connect("status-changed", self.on_status_changed)
-        # self.ctrl.mry.connect("notify::re-status", self.on_status_changed)
-        # self.ctrl.device.delay.connect("notify::delay-status", self.on_status_changed)
 
-        # self.ctrl.device.mod.connect("notify::mo-status", self.on_status_changed)
-        # self.ctrl.device.fx.connect("notify::fx-status", self.on_status_changed)
         self.append(self.effects)
         self.append(self.bank_a)
         self.append(self.bank_b)
@@ -45,40 +38,7 @@ class Switcher(Gtk.Box):
         for bank in [self.bank_a, self.bank_b]:
             for but in bank.buttons:
                 but.toggled_id = but.connect("toggled", self.set_channel)
-                
-                #log.debug(but.name)
-                # if but.name == 'BOOSTER':
-                #     but.bind_id = self.ctrl.device.booster.bind_property(
-                #         "boost_sw", but, "active",
-                #         GObject.BindingFlags.BIDIRECTIONAL |\
-                #         GObject.BindingFlags.SYNC_CREATE )
-                # elif but.name == 'MOD':
-                #     but.bind_id = self.ctrl.device.mod.bind_property(
-                #         "mo_sw", but, "active",
-                #         GObject.BindingFlags.BIDIRECTIONAL |\
-                #         GObject.BindingFlags.SYNC_CREATE )
-                # elif but.name == 'FX':
-                #     but.bind_id = self.ctrl.device.fx.bind_property(
-                #         "fx_sw", but, "active",
-                #         GObject.BindingFlags.BIDIRECTIONAL |\
-                #         GObject.BindingFlags.SYNC_CREATE )
-
-                # elif but.name == 'REVERB':
-                #     but.bind_id = self.ctrl.device.reverb.bind_property(
-                #         "reverb_sw", but, "active",
-                #         GObject.BindingFlags.BIDIRECTIONAL |\
-                #         GObject.BindingFlags.SYNC_CREATE )
-                # elif but.name == 'DELAY':
-                #     but.bind_id = self.ctrl.device.delay.bind_property(
-                #         "delay_sw", but, "active",
-                #         GObject.BindingFlags.BIDIRECTIONAL |\
-                #         GObject.BindingFlags.SYNC_CREATE )
-                # else:
-            #self.ctrl.device.booster.connect("notify::booster_sw", lambda o,p: print("booster_sw changed:", o.booster_sw))
-
-    # def on_effect_switched(self, button):
-        # self.ctrl.emit("switch-effect", button.name, button.get_active())
-
+        
     def on_status_changed(self, ctrl, obj, bind_prop):
         # log.debug(f"{obj.name} {obj.get_property(bind_prop)=}")
         obj_name = obj.name.lower()
@@ -111,19 +71,19 @@ class Switcher(Gtk.Box):
                 self.ctrl.set_midi_channel(button.data)
 
     def on_channel_changed(self, obj, ch_num):
-        # log.debug(f"{obj} {ch_num=}")
+        log.debug(f"{obj} {ch_num=}")
         if ch_num <= 4:
             but = self.bank_a.buttons[ch_num-1]
-            if hasattr(but, 'toggled_id'):
-                but.handler_block(but.toggled_id)
+            # if hasattr(but, 'toggled_id'):
+            but.handler_block(but.toggled_id)
             but.set_active(True)
-            if hasattr(but, 'toggled_id'):
-                but.handler_unblock(but.toggled_id)
+            # if hasattr(but, 'toggled_id'):
+            but.handler_unblock(but.toggled_id)
         else:
             but = self.bank_b.buttons[ch_num-5]
-            # but.handler_block(but.toggled_id)
+            but.handler_block(but.toggled_id)
             but.set_active(True)
-            # but.handler_unblock(but.toggled_id)
+            but.handler_unblock(but.toggled_id)
             # self.bank_b.buttons[ch_num-5].set_active(True)
         #self.presets[ch_num-1].set_active(True)
 

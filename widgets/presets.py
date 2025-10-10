@@ -17,13 +17,14 @@ class PresetEntry(Gtk.Entry):
 class PresetRow(Gtk.Box):
     def __init__(self):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        # self.channel_idx = -1
         self.num = Gtk.Label(xalign=1)
-        self.label = Gtk.Label()
+        self.name = Gtk.Label()
         self.append(self.num)
-        self.append(self.label)
+        self.append(self.name)
 
 class PresetsView(Gtk.Box):
-
+    selected = GObject.Property(type=int, default=-1)
     def __init__(self, ctrl):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.ctrl = ctrl
@@ -42,7 +43,10 @@ class PresetsView(Gtk.Box):
 
         self.selection.connect("selection-changed", self.on_selection_changed)
         self.ctrl.mry.connect('mry-loaded', self.on_mry_loaded)
+        self.ctrl.connect("channel-changed", self.on_channel_changed)
 
+    def on_channel_changed(self, obj, ch_num):
+        self.selection.set_selected(ch_num - 1)
 
     def on_mry_loaded(self, mry):
         preset_name = self.ctrl.mry.get_actual_preset()
@@ -51,17 +55,18 @@ class PresetsView(Gtk.Box):
 
     def on_selection_changed(self, selection, position, n_items):
         index = selection.get_selected()
+        self.selected = index
         if index != Gtk.INVALID_LIST_POSITION:
             item = selection.get_model().get_item(index)
             # log.debug(f"Sélectionné index={index}, valeur={item}")
-            self.ctrl.emit("channel-changed", index+1)
+            # self.ctrl.emit("channel-changed", index+1)
 
     def find_index_by_text(self, selection, text_to_find):
         model = selection.get_model()
         for i in range(model.get_n_items()):
             preset=model.get_item(i)
-            #log.debug(f"{preset.label=} {text_to_find.strip()=}")
-            if text_to_find.strip() in preset.label.strip():
+            log.debug(f"{preset.name=} {text_to_find.strip()=}")
+            if text_to_find.strip() in preset.name.strip():
                 if i>8:
                     log.warning(f"bad index : {i}")
                     return 0
@@ -75,7 +80,6 @@ class PresetsView(Gtk.Box):
     def on_bind(self, factory, list_item):
         row: PresetRow = list_item.get_child()
         preset: Preset = list_item.get_item()
-
         preset.bind_property(
             "num",
             row.num,
@@ -83,11 +87,12 @@ class PresetsView(Gtk.Box):
             GObject.BindingFlags.SYNC_CREATE,
             transform_to=lambda _b, n: f"CH_{n}:",
         )
-
         preset.bind_property(
-            "label",
-            row.label,
+            "name",
+            row.name,
             "label",
             GObject.BindingFlags.SYNC_CREATE
         )
+
+
 

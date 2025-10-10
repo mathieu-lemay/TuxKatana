@@ -51,7 +51,9 @@ class Effect:
             value = list(self.types.inverse)[value]
             current = self.get_property(name)
             addr = self.mapping.get(name, None)
-        # log.debug(f"{name}={value} {self.prefix=}")
+            # log.debug(f"{name}={value} {self.prefix=}")
+            # log.debug(f"{self.name}: {self.types.inverse[value]}")
+            self.ctrl.emit("effect-changed", self.name, self.types.inverse[value])
             if current != value:
                 self.direct_mry(addr, value)
         elif name.endswith('_lvl'):

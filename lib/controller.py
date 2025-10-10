@@ -25,14 +25,14 @@ log = logging.getLogger(LOGGER_NAME)
 class Controller(GObject.GObject):
     __gsignals__ = {
         "recvd-sysex": (GObject.SignalFlags.RUN_FIRST, None, (object, object)),
-
-        "channel-changed": (GObject.SIGNAL_RUN_FIRST, None, (int,)),
-        "edit-toggled": (GObject.SIGNAL_RUN_FIRST, None, (bool,)),
-        "preset-changed": (GObject.SIGNAL_RUN_FIRST, None, (str,)),
-        "load-maps": (GObject.SignalFlags.RUN_FIRST, None, ()),
-        "status-changed": (GObject.SignalFlags.RUN_FIRST, None, (object, str)),
-        # "switch-effect": (GObject.SignalFlags.RUN_FIRST, None, (str,bool,)),
-        "load-maps": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "channel-changed":  (GObject.SIGNAL_RUN_FIRST, None, (int,)),
+        "edit-toggled":     (GObject.SIGNAL_RUN_FIRST, None, (bool,)),
+        "preset-changed":   (GObject.SIGNAL_RUN_FIRST, None, (str,)),
+        "load-maps":        (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "status-changed":   (GObject.SignalFlags.RUN_FIRST, None, (object, str)),
+        # "switch-effect":  (GObject.SignalFlags.RUN_FIRST, None, (str,bool,)),
+        "load-maps":        (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "effect-changed":   (GObject.SignalFlags.RUN_FIRST, None, (str, str)),
     }
     name = GObject.Property(type=str, default="SETTINGS")
     edit_mode = GObject.Property(type=bool, default=False)
@@ -189,11 +189,11 @@ class Controller(GObject.GObject):
         self.pause_queue = False
 
     def set_preset(self, sx_msg):
-        label = sx_msg.to_chars()
+        name = sx_msg.to_chars()
 
         num = sx_msg.addr[1]
-        name = "PRESET_"+str(num)
-        self.presets.append(Presets(name=name, label=label, num=num))
+        # name = "PRESET_"+str(num)
+        self.presets.append(Presets(name=name, num=num))
 
     ###
     def wait_msg(self, timeout=0.1):
