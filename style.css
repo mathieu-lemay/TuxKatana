@@ -14,6 +14,11 @@ button.toggle:not(:checked) {
                inset -1px -1px 1px rgba(0,0,0,0.6);
 
 }
+.no-margin {
+   margin: 0px;
+   padding: 0px;
+  /*border: 1px solid black;*/
+}
 .label {
   /*border: 1px solid black;*/
    margin: 0px 5px 0px 5px;
@@ -28,6 +33,7 @@ button.toggle:not(:checked) {
   border-radius: 6px;*/
   /*margin-top: 0px;
   padding: 1px;*/
+  border-radius: 6px;
   box-shadow: inset 1px 1px 1px rgba(0,0,0,0.6),
               inset -1px -1px 1px rgba(255,255,255,0.4);
 }

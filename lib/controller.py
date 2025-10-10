@@ -30,9 +30,10 @@ class Controller(GObject.GObject):
         "preset-changed":   (GObject.SIGNAL_RUN_FIRST, None, (str,)),
         "load-maps":        (GObject.SignalFlags.RUN_FIRST, None, ()),
         "status-changed":   (GObject.SignalFlags.RUN_FIRST, None, (object, str)),
-        # "switch-effect":  (GObject.SignalFlags.RUN_FIRST, None, (str,bool,)),
         "load-maps":        (GObject.SignalFlags.RUN_FIRST, None, ()),
         "effect-changed":   (GObject.SignalFlags.RUN_FIRST, None, (str, str)),
+        "set-preset-name":  (GObject.SignalFlags.RUN_FIRST, None, (int, str)),
+        "set-effect-name":  (GObject.SignalFlags.RUN_FIRST, None, (int, str)),
     }
     name = GObject.Property(type=str, default="SETTINGS")
     edit_mode = GObject.Property(type=bool, default=False)
@@ -193,6 +194,7 @@ class Controller(GObject.GObject):
 
         num = sx_msg.addr[1]
         # name = "PRESET_"+str(num)
+        self.emit("set-preset-name", int(num-1), name)
         self.presets.append(Presets(name=name, num=num))
 
     ###

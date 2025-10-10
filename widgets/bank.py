@@ -8,19 +8,28 @@ log = logging.getLogger(LOGGER_NAME)
 
 from widgets.toggle import Toggle
 
-class Bank(Gtk.Box):
+class Bank(Gtk.Grid):
     selected = GObject.Property(type=int, default=-1)
     single_list = GObject.Property(type=object)
 
-    def __init__(self, label, buttons, single=False, color_sw=False):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+    def __init__(self, label, buttons, single=False, color_sw=False, ctrl=None):
+        super().__init__(column_spacing=1, row_spacing=1)
+        self.set_column_homogeneous(True)
         self.get_style_context().add_class("inner")
-        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        self.ctrl = ctrl
+        self.name = label
         self.single = single
-        if label:
-            label = Gtk.Label(label=label)
-            self.append(label)
-        self.append(box)
+        self.labels = []
+        if label in ['BANK_A', 'BANK_B']:
+            self.ctrl.connect("set-preset-name", self.on_set_preset_name)
+            for i, name in enumerate(buttons):
+                self._add_label(i, name)
+        elif label == 'EFFECTS':
+            self.ctrl.connect("set-effect-name", self.on_set_effect_name)
+            for i, name in enumerate(buttons):
+                if name != "DELAY_R":
+                    self._add_label(i, name)
+
         self.buttons = []
         for i, name in enumerate(buttons):
             if name != 'DELAY_R':
@@ -29,9 +38,28 @@ class Bank(Gtk.Box):
                 but.set_hexpand(True)
                 but.set_halign(Gtk.Align.FILL)
                 self.buttons.append(but)
-                box.append( but )
+                self.attach(but, i, 1, 1, 1)
         if not self.single:
             self.connect("notify::selected", self.on_selected)
+
+    def on_set_effect_name(self, widget, idx, name):
+        self.labels[idx].set_label(name)
+
+    def on_set_preset_name(self, widget, idx, name):
+        # log.debug(f"{self.labels} {self.name}: {name} ({idx})")
+        if self.name == 'BANK_A' and idx<4:
+            self.labels[idx].set_label(name)
+        elif self.name == 'BANK_B':
+            self.labels[idx-4].set_label(name)
+
+    def _add_label(self, idx, name):
+        # log.debug(f"{idx=} {name=}")
+        lbl = Gtk.Label(label=name)
+        lbl.get_style_context().add_class('no-margin')
+        lbl.set_hexpand(False)
+        self.labels.append(lbl)
+        self.attach( lbl, idx, 0, 1, 1)
+
 
     def on_selected(self, obj, pspec):
         #log.debug(f"bank.on_selected({self.selected})")

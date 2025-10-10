@@ -52,7 +52,7 @@ class Effect:
             current = self.get_property(name)
             addr = self.mapping.get(name, None)
             # log.debug(f"{name}={value} {self.prefix=}")
-            # log.debug(f"{self.name}: {self.types.inverse[value]}")
+            log.debug(f"{self.name}: {self.types.inverse[value]}")
             self.ctrl.emit("effect-changed", self.name, self.types.inverse[value])
             if current != value:
                 self.direct_mry(addr, value)
@@ -62,9 +62,12 @@ class Effect:
                 self.direct_mry(addr, value)
 
     def direct_set(self, prop, value):
-        # log.debug(f"{prop}={value}:{type(value)}")
+        prefixes = ['bo_','mo_','fx_','de_','re_']
+        if 'type' in prop and self.prefix in prefixes:
+            idx = prefixes.index(self.prefix)
+            self.ctrl.emit("set-effect-name", idx, self.types.inverse[value.str])
+       # log.debug(f"{prop}={value}:{type(value)}")
         value = self.type_val(prop, value)
-        # log.debug(f"{prop}={value}:{type(value)}")
         self.handler_block(self.notify_id)
         self.set_property(prop, value)
         self.handler_unblock(self.notify_id)

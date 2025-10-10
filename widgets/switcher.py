@@ -21,12 +21,14 @@ class Switcher(Gtk.Box):
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.ctrl = ctrl
 
-        self.bank_a = Bank('BANK_A', config['BANK_A'] )
-        self.bank_b = Bank('BANK_B', config['BANK_B'] )
+        self.bank_a = Bank('BANK_A', config['BANK_A'], ctrl=ctrl )
+        self.bank_b = Bank('BANK_B', config['BANK_B'], ctrl=ctrl )
+        # self.bank_a = Bank([], config['BANK_A'], ctrl=ctrl )
+        # self.bank_b = Bank([], config['BANK_B'], ctrl=ctrl )
         self.bank_a.f_bank = self.bank_b
         self.bank_b.f_bank = self.bank_a
 
-        self.effects = Bank("EFFECTS", config['EFFECTS'], single=True)
+        self.effects = Bank("EFFECTS", config['EFFECTS'], single=True, ctrl=ctrl)
 
         self.ctrl.connect("status-changed", self.on_status_changed)
 

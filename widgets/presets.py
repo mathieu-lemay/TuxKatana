@@ -36,6 +36,7 @@ class PresetsView(Gtk.Box):
 
         self.selection = Gtk.SingleSelection.new(ctrl.presets)
         listview = Gtk.ListView.new(self.selection, factory)
+        listview.get_style_context().add_class('inner')
         self.append(listview)
 
         self.preset = PresetUI(ctrl.preset)
@@ -65,7 +66,7 @@ class PresetsView(Gtk.Box):
         model = selection.get_model()
         for i in range(model.get_n_items()):
             preset=model.get_item(i)
-            log.debug(f"{preset.name=} {text_to_find.strip()=}")
+            # log.debug(f"{preset.name=} {text_to_find.strip()=}")
             if text_to_find.strip() in preset.name.strip():
                 if i>8:
                     log.warning(f"bad index : {i}")
@@ -93,6 +94,5 @@ class PresetsView(Gtk.Box):
             "label",
             GObject.BindingFlags.SYNC_CREATE
         )
-
 
 
