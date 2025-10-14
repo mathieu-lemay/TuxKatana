@@ -1,0 +1,34 @@
+| Address Range   | Size | Name                           | Notes                |
+|-----------------|------|--------------------------------|----------------------|
+| 0x0000 - 0x0010 | 16   | UserPatch%PatchName            |                      |
+| 0x0010 - 0x0058 | 72   | UserPatch%Patch_0              |                      |
+| 0x0060 - 0x0078 | 24   | UserPatch%Eq(2)                |                      |
+| 0x0080 - 0x0161 | 225  | UserPatch%Fx(1)                |                      |
+| 0x0180 - 0x0261 | 225  | UserPatch%Fx(2)                |                      |
+| 0x0280 - 0x029A | 26   | UserPatch%Delay(1)             |                      |
+| 0x02A0 - 0x02BA | 26   | UserPatch%Delay(2)             |                      |
+| 0x02C0 - 0x031B | 91   | UserPatch%Patch_1              |                      |
+| 0x0300 - 0x0314 | 20   | UserPatch%Chain                |                      |
+| 0x0320 - 0x0344 | 36   | UserPatch%Patch_2              |                      |
+| 0x0350 - 0x0362 | 18   | UserPatch%Status               |                      |
+| 0x0380 - 0x03A2 | 34   | UserPatch%KnobAsgn             |                      |
+| 0x0400 - 0x0422 | 34   | UserPatch%ExpPedalAsgn         |                      |
+| 0x0430 - 0x047E | 78   | UserPatch%ExpPedalAsgnMinMax   |                      |
+| 0x0480 - 0x04A2 | 34   | UserPatch%GafcExp1Asgn         |                      |
+| 0x04B0 - 0x04FE | 78   | UserPatch%GafcExp1AsgnMinMax   |                      |
+| 0x0500 - 0x0522 | 34   | UserPatch%GafcExp2Asgn         |                      |
+| 0x0530 - 0x057E | 78   | UserPatch%GafcExp2AsgnMinMax   |                      |
+| 0x0580 - 0x05A2 | 34   | UserPatch%GafcExp3Asgn         |                      |
+| 0x05B0 - 0x05FE | 78   | UserPatch%GafcExp3AsgnMinMax   |                      |
+| 0x0600 - 0x0622 | 34   | UserPatch%GafcExExp1Asgn       |                      |
+| 0x0630 - 0x067E | 78   | UserPatch%GafcExExp1AsgnMinMax |                      |
+| 0x0680 - 0x06A2 | 34   | UserPatch%GafcExExp2Asgn       |                      |
+| 0x06B0 - 0x06FE | 78   | UserPatch%GafcExExp2AsgnMinMax |                      |
+| 0x0730 - 0x077E | 78   | UserPatch%GafcExExp3AsgnMinMax |                      |
+| 0x0780 - 0x0788 | 8    | UserPatch%CtrlAsgn             |                      |
+| 0x0788 - 0x078A | 2    | UserPatch%FsAsgn               |                      |
+| 0x0790 - 0x07A6 | 22   | UserPatch%Patch_Mk2V2          | Sometimes size is 10 |
+| 0x0790 - 0x07B2 | 34   | UserPatch%GafcExExp3Asgn       |                      |
+| 0x07B0 - 0x07B2 | 2    | UserPatch%Contour(1)           |                      |
+| 0x07B8 - 0x07BA | 2    | UserPatch%Contour(2)           |                      |
+| 0x07C0 - 0x07C2 | 2    | UserPatch%Contour(3)           |                      |
