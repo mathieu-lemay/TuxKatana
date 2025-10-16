@@ -7,17 +7,25 @@ from .box_inner import BoxInner
 from .file_chooser import FileChooser
 from .channel_chooser import ChannelChooser
 
+from lib.tsl import TSLParser
+# from lib.preset import Preset
+
 import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
 
 class PresetUI(Gtk.Box):
-    def __init__(self, ctrl):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+    def __init__(self, parent, ctrl):
+        super().__init__()
+        self.set_orientation(Gtk.Orientation.VERTICAL)
+        self.set_spacing(6)
+
+        self.parent = parent
         self.ctrl = ctrl
         self.filename = None
         self.file_path = None
-        self.selected_channel = None
+        self.channel = None
+        self.parser = TSLParser(self)
 
         box_tsl = BoxInner(label="TSL File", h_box=True)
         box_tsl.set_spacing(6)
@@ -58,6 +66,7 @@ class PresetUI(Gtk.Box):
         self.chan_sel.set_hexpand(False)
         self.chan_sel.set_tooltip_text("Select Dest Channel")
         box.h_box.append(self.chan_sel)
+        self.chan_sel.connect("changed", self.on_chan_sel_changed)
         for i in range(8):
             self.chan_sel.append(str(i), f"CH_{i+1}")
 
@@ -74,7 +83,9 @@ class PresetUI(Gtk.Box):
         log.debug("save")
 
     def load_preset(self, widget):
-        log.debug("load")
+        name = self.select.get_active_text()
+        mry_flash = self.parser.get_user_patches(name)
+        log.debug(f"{mry_flash=}")
 
     def open_tsl(self, widget):
         win = self.ctrl.parent.win
@@ -84,33 +95,38 @@ class PresetUI(Gtk.Box):
             "_Cancel", Gtk.ResponseType.CANCEL,
             "_Open", Gtk.ResponseType.ACCEPT
         )
-        self.file_path = chooser.choose()
-        log.debug(f"{self.file_path=}")
-        if self.file_path:
-            self.filename = os.path.basename(self.file_path).split('.')[0]
+        chooser.choose(self.set_file_path)
+    def set_file_path(self, file_path):
+        if file_path:
+            self.file_path = file_path
+            self.filename = os.path.basename(file_path).split('.')[0]
             self.file.set_text(self.filename)
+            self.parser.open(self.file_path)
+        log.debug(f"{self.file_path=}")
 
-       
+    def on_chan_sel_changed(self, chan_sel):
+        idx = int(chan_sel.get_active_id())
+        self.parent.selection.select_item(idx, True)
+        # log.debug(idx)
+#    def on_load_clicked(self, button):
+#        win = self.ctrl.parent.win
+#        win.set_sensitive(False)
+#        ch_chooser = ChannelChooser(win, self)
+#        ch_chooser.connect("response", self.on_channel_choosed)
+#        ch_chooser.show()
 
-    def on_load_clicked(self, button):
-        win = self.ctrl.parent.win
-        win.set_sensitive(False)
-        ch_chooser = ChannelChooser(win, self)
-        ch_chooser.connect("response", self.on_channel_choosed)
-        ch_chooser.show()
+#    def on_channel_choosed(self, dialog, response):
+#        win = self.ctrl.parent.win
+#        win.set_sensitive(True)
+#        if response == Gtk.ResponseType.OK:
+#            self.channel = dialog.get_selected_channel()
+#            print("Choosed Channel :", self.channel)
+#        else:
+#            print("Canceled")
+#        dialog.destroy()
 
-    def on_channel_choosed(self, dialog, response):
-        win = self.ctrl.parent.win
-        win.set_sensitive(True)
-        if response == Gtk.ResponseType.OK:
-            self.selected_channel = dialog.get_selected_channel()
-            print("Choosed Channel :", self.selected_channel)
-        else:
-            print("Canceled")
-        dialog.destroy()
-
-    def on_save_clicked(self, button):
-        #log.debug(f"{self.dest_dir+self.file_path}")
-        filename = self.file.get_text()
-        log.debug(filename)
+#    def on_save_clicked(self, button):
+#        #log.debug(f"{self.dest_dir+self.file_path}")
+#        filename = self.file.get_text()
+#        log.debug(filename)
         # self.own_ctrl.save(filename + '.tsl')

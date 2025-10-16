@@ -4,7 +4,6 @@ import json
 from lib.midi_bytes import Address, MIDIBytes
 
 def checksum(body):
-    """Checksum MIDI simple pour un bloc de bytes"""
     s = sum(body) % 128
     return MIDIBytes([(128 - s) % 128])
 

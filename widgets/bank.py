@@ -27,8 +27,11 @@ class Bank(Gtk.Grid):
         elif label == 'EFFECTS':
             self.ctrl.connect("set-effect-name", self.on_set_effect_name)
             for i, name in enumerate(buttons):
+                idx = i
                 if name != "DELAY_R":
-                    self._add_label(i, name)
+                    # if name == "REVERB":
+                        # idx -= 1
+                    self._add_label(idx, name)
 
         self.buttons = []
         for i, name in enumerate(buttons):
@@ -43,7 +46,9 @@ class Bank(Gtk.Grid):
             self.connect("notify::selected", self.on_selected)
 
     def on_set_effect_name(self, widget, idx, name):
-        self.labels[idx].set_label(name)
+        if self.labels[idx].get_label() != name:
+            self.labels[idx].set_label(name)
+            log.debug(f"{idx=} {name=}")
 
     def on_set_preset_name(self, widget, idx, name):
         # log.debug(f"{self.labels} {self.name}: {name} ({idx})")
@@ -53,7 +58,7 @@ class Bank(Gtk.Grid):
             self.labels[idx-4].set_label(name)
 
     def _add_label(self, idx, name):
-        # log.debug(f"{idx=} {name=}")
+        log.debug(f"{idx=} {name=}")
         lbl = Gtk.Label(label=name)
         lbl.get_style_context().add_class('no-margin')
         lbl.set_hexpand(False)

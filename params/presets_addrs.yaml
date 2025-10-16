@@ -27,29 +27,29 @@ UserPatch%Patch_2:
   size: 36
 UserPatch%Status:
   addr: '60 00 06 50'
-  addr: 18
-UserPatch%GafcExp1AsgnMinMax:
-  addr: '60 00 09 39'
-  size: 76
+  size: 18
 UserPatch%KnobAsgn:
   addr: ''
   size: 33
 UserPatch%ExpPedalAsgn:
   addr: ''
   size: 33
-UserPatch%ExpPedalAsgnMinMax:     # ⚠️  Sequence not valuable
+UserPatch%ExpPedalAsgnMinMax:
+  # ⚠️  Sequence not valuable
   addr: '60 00 08 30'
   size: 76
 UserPatch%GafcExp1Asgn:
   addr: ''
   size: 33
-UserPatch%GafcExp1AsgnMinMax:     # ⚠️  Sequence not valuable +1
+UserPatch%GafcExp1AsgnMinMax:
+  # ⚠️  Sequence not valuable +1
   addr: '60 00 09 30'
   size: 76
 UserPatch%GafcExp2Asgn:
   addr: ''
   size: 33
-UserPatch%GafcExp2AsgnMinMax:     # ⚠️  Sequence not valuable
+UserPatch%GafcExp2AsgnMinMax:
+  # ⚠️  Sequence not valuable
   addr: '60 00 0A 30'
   size: 76
 UserPatch%FsAsgn:
@@ -64,3 +64,6 @@ UserPatch%Contour(2):
 UserPatch%Contour(3):
   addr: ''
   size: 2
+UserPatch%Patch_Mk2V2:
+  addr: ''
+  size: 22

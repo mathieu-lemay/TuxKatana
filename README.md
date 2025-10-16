@@ -5,10 +5,10 @@
 
 ## Disclaimer
 
-	⚠️  WARNING : this app is a work in progress  
-	✅ But is working enough
+	⚠️  This app is a work in progress  
+	✅ But is working great enough
 	
-    ⚠️  WARNING-2 : this app works in "Edit Mode" all the time :
+    ⚠️  This app works in "Edit Mode" all the time :
     the reason is : 
     without it the Katana is not sending back other parameters 
     changing with that one you changed  
@@ -24,11 +24,11 @@
 
 ## Demo
 
-    (made with bad resolution and sound level, need to retry ^^')
+    (made with bad resolution and low sound level, need a retry ^^')
 
 > [YT - Demo](https://www.youtube.com/watch?v=bfD31DUedUE)
 
-## Snapshots examples
+## Screenshots examples
 
 ![Tuner](./snapshots/Tuner.png)
 
@@ -36,14 +36,28 @@
 
 ## Missing
 
-* Presets Save/Load
-* CHAINs 
+* Presets Save/Load (WIP)
+* CHAINs (will be hard to do)
 
 ## Install
+> Under **#Debian trixie**, you **do not** need other special import with pip, than **sounddevice** for now
+>
+>I'll soon change it to **pulsectl**, so that you'll need nothing more than **Debian main python3 packages**  
+>
+>Like done with [guit_tunix](https://github.com/s4mdf0o1/guit_tunix) which old version has been integrated here
+>
+>[Mathieu Lemay](https://github.com/mathieu-lemay) gaves us a **helper with poetry venv for other OS' installation**, but it's not a requirement under Debian based one.
+
+Debian packages:
+```bash
+$ sudo apt install python3-mido python3-gi gir1.2-gtk-4.0 gir1.2-gstreamer-1.0 python3-bidict python3-ruamel.yaml python3-pulsectl 
+```
+
+Easy:
+* [poetry](https://python-poetry.org/)
 
 Requirements:
-* python >= 3.12
-* [poetry](https://python-poetry.org/)
+* python >= 3.12  
 
 ## Tuner
 
@@ -55,36 +69,8 @@ $ pactl list short sources | grep KATANA
 23	alsa_input.usb-BOSS_KATANA-01.HiFi__Line4__source	module-alsa-card.c	s32le 2ch 44100Hz	RUNNING
 24	alsa_input.usb-BOSS_KATANA-01.HiFi__Line3__source	module-alsa-card.c	s32le 2ch 44100Hz	RUNNING
 ```
-> For a better 'Tuner' experience: __boost__ the 'KATANA DI Capture' in _pavucontrol_ (here : Line4)
 
+The one to be used to tune guitar, is Line4 (Direct Capture), while Line3 is Effects processed one
 
-## Adding Interface
-
-   2 files to create:
-
-### params/your_interface.yaml
-
-see: [HOW](./HOW.md)
-
-format :
-```yaml
-    SEND:
-        variable: "XX XX XX XX"     # XX -> hex str expression of address 
-    RECV:
-        "XX XX XX XX": 'variable'   # addresses to only be readen
-    Types:
-        "Name": "XX"                # XX: hex code of model
-```
-
-### widgets/your_interface.py
-
-    add GObjet.properties:
-
-   * int for scales with simple byte ending with '_lvl'
-   * float for scales with double bytes ending with '_lvl'
-   * bool for switches ending with 'sw'
-   * str for Types stored 'NAME': 'XX' MIDIBytes('XX') insures it's base128 conversion
-   * same name as type plus '_idx' -> helps connecting to ComboBox class named ComboStore
-
-> template.py has some examples
+## [HOW](./HOW.md)
 

@@ -3,6 +3,10 @@ gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, Gio #GLib, Gdk, GObject
 import os
 
+import logging
+from lib.log_setup import LOGGER_NAME
+log = logging.getLogger(LOGGER_NAME)
+
 class FileChooser(Gtk.FileChooserDialog):
     def __init__(self, win, parent, title="Choose Preset file",
                  action=Gtk.FileChooserAction.OPEN):#,
@@ -20,15 +24,17 @@ class FileChooser(Gtk.FileChooserDialog):
             f.add_pattern(p)
         Gtk.FileChooserNative.add_filter(self, f)
 
-    def choose(self):
+    def choose(self, callback):
         def on_response(dialog, response):
             file_path = None
             if response == Gtk.ResponseType.ACCEPT:
                 file = dialog.get_file()
                 if file:
                     file_path = file.get_path()
-                    dialog.parent.file_path = file_path
-                    dialog.parent.file.set_text(os.path.basename(file_path).split('.')[0])
+                    log.debug(f"{file_path}")
+                    callback(file_path)
+                    # dialog.parent.file_path = file_path
+                    # dialog.parent.filename.set_text(os.path.basename(file_path).split('.')[0])
             dialog.destroy()
 
         self.connect("response", on_response)

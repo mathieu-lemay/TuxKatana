@@ -11,7 +11,7 @@ from threading import Thread, Event
 from queue import Queue, Empty
 
 from .midi_port import KatanaPort
-from widgets.presets import Presets
+from lib.preset import Preset
 # from .device import Device
 from .midi_bytes import Address, MIDIBytes
 from .sysex import SysEx
@@ -63,7 +63,7 @@ class Controller(GObject.GObject):
         GLib.timeout_add_seconds(1, self.wait_device)
         ###
         self.mry = Memory( self.addrs['MEMORY'])
-        self.presets = Gio.ListStore(item_type=Presets)
+        self.presets = Gio.ListStore(item_type=Preset)
         # self.amplifier=Amplifier( self )
 
         # self.preset = Preset( self )
@@ -192,10 +192,10 @@ class Controller(GObject.GObject):
     def set_preset(self, sx_msg):
         name = sx_msg.to_chars()
 
-        num = sx_msg.addr[1]
-        # name = "PRESET_"+str(num)
-        self.emit("set-preset-name", int(num-1), name)
-        self.presets.append(Presets(name=name, num=num))
+        chan = sx_msg.addr[1]
+        # name = "PRESET_"+str(chan)
+        self.emit("set-preset-name", int(chan-1), name)
+        self.presets.append(Preset(name=name, chan=chan))
 
     ###
     def wait_msg(self, timeout=0.1):

@@ -73,7 +73,7 @@ class Switcher(Gtk.Box):
                 self.ctrl.set_midi_channel(button.data)
 
     def on_channel_changed(self, obj, ch_num):
-        log.debug(f"{obj} {ch_num=}")
+        # log.debug(f"{obj} {ch_num=}")
         if ch_num <= 4:
             but = self.bank_a.buttons[ch_num-1]
             # if hasattr(but, 'toggled_id'):

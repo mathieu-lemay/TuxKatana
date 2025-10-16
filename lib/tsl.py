@@ -6,6 +6,8 @@ from gi.repository import GLib, GObject, Gio
 from ruamel.yaml import YAML
 yaml = YAML(typ="rt")
 
+from .midi_bytes import MIDIBytes, Address
+
 import logging
 from lib.log_setup import LOGGER_NAME
 log = logging.getLogger(LOGGER_NAME)
@@ -14,22 +16,52 @@ class TSLParser:#(GObject.GObject):
     # __gsignals__ = {
     #     "modfx-map-ready": (GObject.SIGNAL_RUN_FIRST, None, (object,object,)),
     # }
-    def __init__(self, device):
-        super().__init__()
-        self.device = device
-        with open("params/format_preset.yaml", 'r') as f:
+    def __init__(self, ui=None):
+        # super().__init__()
+        self.ui = ui
+        # with open("params/format_preset.yaml", 'r') as f:
+        with open("params/presets_addrs.yaml", 'r') as f:
             self.map = yaml.load(f)
         self.data={}
-        self.preset_name = "TODO"
-        self.revision = "0002"      # to understand
-        self.device_name = "KATANA Mk2"  # to get from device name
-        self.memo = ""              # can be used
-        self.dir_path = os.getcwd() + "/presets"
+        self.revision = "0002"              # seem to tell the "UserPatch%Patch_Mk2V2" presence
+        self.memo = ""
+        self.path = os.getcwd() + "/presets"
 
-    def load(self, filename):
-        self.filename = filename
-        with open(filename, 'r') as f:
-            self.data = json.load(f)
+    def open(self, file_path):
+        self.file_path = file_path
+
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+        if data['device'] != "KATANA MkII":
+            log.warning(f"{data['device']} != 'KATANA MkII'") # TODO : Alert Dialog
+            return
+        self.tsl_name = data['name']
+        self.revision = data['formatRev']
+        self.device = data['device']
+        presets_list = data['data'][0]
+        self.presets_list = {}
+        self.ui.select.remove_all()
+        for i, preset in enumerate(presets_list):
+            frm = " ".join(preset['paramSet']['UserPatch%PatchName'])
+            name = MIDIBytes(frm).to_chars().strip()
+            self.presets_list[name] = preset
+            self.ui.select.append(str(i), name)
+        self.ui.select.set_active_id('0')
+
+    def get_user_patches(self, name):
+        log.debug(name)
+        mry = {}
+        if self.presets_list:
+            for patch, data in self.presets_list[name]['paramSet'].items():
+                mp = self.map[patch]
+                log.debug(f"{patch} {data}")
+                addr = Address(mp['addr'])
+                # size = mp['size']
+                frm = " ".join(data)
+                data = MIDIBytes(frm)
+                mry[addr] = data
+            # log.debug(self.presets_list[name])
+        return mry
 
     def generate(self):
         tsl = {}

@@ -26,7 +26,10 @@ def close(app):
 class MainWindow(Gtk.Window):
     def __init__(self, app, config):
         super().__init__(application=app)
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        box = Gtk.Box()
+        box.set_orientation(Gtk.Orientation.VERTICAL)
+        box.set_spacing(6)
+
         self.set_child(box)
         self.app = app
 
