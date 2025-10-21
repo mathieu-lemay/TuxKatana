@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=TuxKatana
+Comment=Boss Katana Python3 Gtk4 Application
+Exec=/usr/local/src/TuxKatana/.venv/bin/python /usr/local/src/TuxKatana/TuxKatana.py
+Icon=org.domosys.TuxKatana
+Path=/usr/local/src/TuxKatana/
+Terminal=false
+Type=Application
+Categories=Audio;AudioVideo;
+StartupNotify=true

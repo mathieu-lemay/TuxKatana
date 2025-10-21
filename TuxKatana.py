@@ -3,7 +3,7 @@ import sys
 import argparse
 import gi
 gi.require_version("Gtk", "4.0")
-from gi.repository import Gtk, GLib, Gdk, GObject
+from gi.repository import Gtk, GLib, Gdk, GObject, GdkPixbuf
 
 import mido
 from threading import Thread
@@ -26,6 +26,7 @@ def close(app):
 class MainWindow(Gtk.Window):
     def __init__(self, app, config):
         super().__init__(application=app)
+        self.set_icon_name("TuxKatana")
         box = Gtk.Box()
         box.set_orientation(Gtk.Orientation.VERTICAL)
         box.set_spacing(6)
@@ -42,6 +43,9 @@ class MainWindow(Gtk.Window):
         self.set_sensitive(False)
         self.wait_dialog.present()
         GLib.timeout_add_seconds(1, self.check_connection)
+        for d in dir(self):
+            if 'theme' in d:
+                print(d)
 
     def check_connection( self ):
         log.debug("check_connection")

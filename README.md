@@ -38,6 +38,7 @@
 
 * Presets Save/Load (WIP)
 * CHAINs (will be hard to do)
+* Harmonist Mod/Fx
 
 ## Install
 > Under **#Debian trixie**, you **do not** need other special import with pip, than **sounddevice** for now
